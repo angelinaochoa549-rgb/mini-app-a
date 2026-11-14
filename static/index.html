@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#10131d">
+    <meta name="description" content="Crea contraseñas seguras y personalizadas.">
+    <title>Clave — Generador de contraseñas</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #10131d;
+        color: #f5f6fa;
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+        --muted: #9da4b7;
+        --line: rgba(255, 255, 255, .09);
+        --accent: #c4f06b;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        min-width: 320px;
+        min-height: 100vh;
+        margin: 0;
+        background:
+          radial-gradient(ellipse at 50% 0%, rgba(114, 132, 196, .14), transparent 40rem),
+          #10131d;
+      }
+
+      button, input { font: inherit; }
+
+      .page {
+        width: min(100% - 32px, 560px);
+        margin: 0 auto;
+        padding: 48px 0 36px;
+      }
+
+      header { margin-bottom: 30px; }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--accent);
+        font-size: .82rem;
+        font-weight: 750;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 30px;
+        height: 30px;
+        place-items: center;
+        border: 1px solid rgba(196, 240, 107, .35);
+        border-radius: 9px;
+        background: rgba(196, 240, 107, .1);
+      }
+
+      h1 {
+        margin: 21px 0 8px;
+        font-size: clamp(2rem, 8vw, 2.8rem);
+        letter-spacing: -.055em;
+        line-height: 1.08;
+      }
+
+      .intro {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .card {
+        padding: 26px;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        background: rgba(25, 29, 42, .88);
+        box-shadow: 0 24px 70px rgba(0, 0, 0, .23);
+      }
+
+      .output {
+        display: flex;
+        min-height: 68px;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 11px 10px 17px;
+        border: 1px solid rgba(196, 240, 107, .22);
+        border-radius: 12px;
+        background: rgba(196, 240, 107, .055);
+      }
+
+      #password {
+        flex: 1;
+        min-width: 0;
+        overflow-wrap: anywhere;
+        color: var(--accent);
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+        font-size: clamp(.95rem, 3.5vw, 1.15rem);
+        letter-spacing: .025em;
+      }
+
+      .copy-button {
+        flex: 0 0 auto;
+        min-width: 78px;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #252a39;
+        color: #f5f6fa;
+        cursor: pointer;
+      }
+
+      .copy-button:hover { background: #303649; }
+
+      .section-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 26px 0 14px;
+      }
+
+      .section-heading label, fieldset legend {
+        color: #e7e9ef;
+        font-size: .92rem;
+        font-weight: 650;
+      }
+
+      #length-value {
+        color: var(--accent);
+        font-variant-numeric: tabular-nums;
+        font-weight: 700;
+      }
+
+      input[type="range"] {
+        display: block;
+        width: 100%;
+        height: 6px;
+        margin: 0;
+        accent-color: var(--accent);
+        cursor: pointer;
+      }
+
+      .range-labels {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 9px;
+        color: var(--muted);
+        font-size: .75rem;
+      }
+
+      fieldset {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin: 26px 0 0;
+        padding: 0;
+        border: 0;
+      }
+
+      fieldset legend { margin-bottom: 14px; }
+
+      .option {
+        display: flex;
+        min-height: 48px;
+        align-items: center;
+        gap: 10px;
+        padding: 0 12px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        color: #d7d9e2;
+        font-size: .88rem;
+        cursor: pointer;
+      }
+
+      .option:has(input:checked) {
+        border-color: rgba(196, 240, 107, .32);
+        background: rgba(196, 240, 107, .045);
+      }
+
+      .option input {
+        width: 16px;
+        height: 16px;
+        margin: 0;
+        accent-color: var(--accent);
+      }
+
+      .generate-button {
+        width: 100%;
+        min-height: 52px;
+        margin-top: 25px;
+        border: 0;
+        border-radius: 11px;
+        background: var(--accent);
+        color: #171b13;
+        font-weight: 750;
+        cursor: pointer;
+        transition: transform .15s ease, background .15s ease;
+      }
+
+      .generate-button:hover { background: #d3fa86; transform: translateY(-1px); }
+      .generate-button:disabled { cursor: wait; opacity: .7; transform: none; }
+
+      #message {
+        min-height: 20px;
+        margin: 12px 0 0;
+        color: var(--muted);
+        font-size: .83rem;
+      }
+
+      #message.error { color: #ff9a9a; }
+
+      .privacy {
+        display: flex;
+        justify-content: center;
+        gap: 7px;
+        margin-top: 18px;
+        color: var(--muted);
+        font-size: .78rem;
+        text-align: center;
+      }
+
+      @media (max-width: 480px) {
+        .page { padding-top: 32px; }
+        .card { padding: 20px 17px; }
+        .output { gap: 8px; padding-left: 12px; }
+        .copy-button { min-width: 66px; padding-inline: 9px; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header>
+        <div class="brand"><span class="brand-mark" aria-hidden="true">✳</span> Clave</div>
+        <h1>Una clave fuerte.<br>En un instante.</h1>
+        <p class="intro">Personaliza tu contraseña y genera una nueva cuando la necesites.</p>
+      </header>
+
+      <section class="card" aria-label="Opciones de contraseña">
+        <div class="output">
+          <output id="password" aria-live="polite">Pulsa generar para empezar</output>
+          <button class="copy-button" id="copy-button" type="button" disabled>Copiar</button>
+        </div>
+
+        <div class="section-heading">
+          <label for="length">Longitud</label>
+          <span id="length-value">16</span>
+        </div>
+        <input id="length" name="length" type="range" min="4" max="64" value="16">
+        <div class="range-labels" aria-hidden="true"><span>4</span><span>64 caracteres</span></div>
+
+        <fieldset>
+          <legend>Incluir caracteres</legend>
+          <label class="option"><input type="checkbox" name="lowercase" checked> Minúsculas (a-z)</label>
+          <label class="option"><input type="checkbox" name="uppercase" checked> Mayúsculas (A-Z)</label>
+          <label class="option"><input type="checkbox" name="numbers" checked> Números (0-9)</label>
+          <label class="option"><input type="checkbox" name="symbols" checked> Símbolos (!@#…)</label>
+        </fieldset>
+
+        <button class="generate-button" id="generate-button" type="button">Generar contraseña</button>
+        <p id="message" role="status" aria-live="polite"></p>
+      </section>
+
+      <p class="privacy"><span aria-hidden="true">⛨</span> Se genera al instante y no se guarda.</p>
+    </main>
+
+    <script>
+      const lengthInput = document.querySelector("#length");
+      const lengthValue = document.querySelector("#length-value");
+      const passwordOutput = document.querySelector("#password");
+      const generateButton = document.querySelector("#generate-button");
+      const copyButton = document.querySelector("#copy-button");
+      const message = document.querySelector("#message");
+
+      lengthInput.addEventListener("input", () => {
+        lengthValue.textContent = lengthInput.value;
+      });
+
+      generateButton.addEventListener("click", async () => {
+        const options = Object.fromEntries(
+          [...document.querySelectorAll('input[type="checkbox"]')].map((input) => [input.name, input.checked])
+        );
+        generateButton.disabled = true;
+        generateButton.textContent = "Generando…";
+        message.textContent = "";
+        message.classList.remove("error");
+
+        try {
+          const response = await fetch("/api/generate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ length: Number(lengthInput.value), ...options }),
+          });
+          const result = await response.json();
+          if (!response.ok) {
+            throw new Error(result.detail || "No se pudo generar la contraseña.");
+          }
+          passwordOutput.textContent = result.password;
+          copyButton.disabled = false;
+        } catch (error) {
+          message.textContent = error.message || "No se pudo conectar con el servidor.";
+          message.classList.add("error");
+        } finally {
+          generateButton.disabled = false;
+          generateButton.textContent = "Generar contraseña";
+        }
+      });
+
+      copyButton.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(passwordOutput.textContent);
+          message.textContent = "Contraseña copiada al portapapeles.";
+          message.classList.remove("error");
+        } catch {
+          message.textContent = "No se pudo acceder al portapapeles. Selecciona y copia la contraseña.";
+          message.classList.add("error");
+        }
+      });
+    </script>
+  </body>
+</html>
